@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: com.vk.api:sdk:0.5.11">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.vk.api/sdk/0.5.11/7b9c615c3900a03978b67a822a8f6d59d90e4901/sdk-0.5.11.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.vk.api/sdk/0.5.11/d7d5a3a017d71dda635bfabbae95d9759e9aa6ed/sdk-0.5.11-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
