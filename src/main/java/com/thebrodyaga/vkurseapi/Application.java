@@ -1,4 +1,4 @@
-package test;
+package com.thebrodyaga.vkurseapi;
 
 import com.vk.api.sdk.client.TransportClient;
 import com.vk.api.sdk.client.VkApiClient;
@@ -7,8 +7,8 @@ import com.vk.api.sdk.httpclient.HttpTransportClient;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import static test.Constants.APP_ID;
-import static test.Constants.CLIENT_SECRET;
+import static com.thebrodyaga.vkurseapi.Constants.APP_ID;
+import static com.thebrodyaga.vkurseapi.Constants.CLIENT_SECRET;
 
 @SpringBootApplication
 public class Application {

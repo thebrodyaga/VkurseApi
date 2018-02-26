@@ -1,4 +1,4 @@
-package test.model;
+package com.thebrodyaga.vkurseapi.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;

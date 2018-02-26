@@ -1,4 +1,4 @@
-package test.model;
+package com.thebrodyaga.vkurseapi.model;
 
 import com.vk.api.sdk.objects.wall.WallPostFull;
 

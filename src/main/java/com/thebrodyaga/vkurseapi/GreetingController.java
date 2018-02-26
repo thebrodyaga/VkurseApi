@@ -1,4 +1,4 @@
-package test;
+package com.thebrodyaga.vkurseapi;
 
 import com.sun.istack.internal.Nullable;
 import com.vk.api.sdk.exceptions.ApiException;
@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import test.model.VkPostSourceInfo;
-import test.model.VkWallToClient;
-import test.model.VkWallsFromClient;
+import com.thebrodyaga.vkurseapi.model.VkPostSourceInfo;
+import com.thebrodyaga.vkurseapi.model.VkWallToClient;
+import com.thebrodyaga.vkurseapi.model.VkWallsFromClient;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,8 +19,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import static test.Application.actor;
-import static test.Application.vk;
+import static com.thebrodyaga.vkurseapi.Application.actor;
+import static com.thebrodyaga.vkurseapi.Application.vk;
 
 @ResponseBody
 @RestController

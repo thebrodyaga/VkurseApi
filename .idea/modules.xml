@@ -2,8 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/VkSdk.iml" filepath="$PROJECT_DIR$/.idea/modules/VkSdk.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/VkSdk_main.iml" filepath="$PROJECT_DIR$/.idea/modules/VkSdk_main.iml" group="VkSdk" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/VkurseApi.iml" filepath="$PROJECT_DIR$/.idea/modules/VkurseApi.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/VkurseApi_main.iml" filepath="$PROJECT_DIR$/.idea/modules/VkurseApi_main.iml" group="VkurseApi" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/VkurseApi_test.iml" filepath="$PROJECT_DIR$/.idea/modules/VkurseApi_test.iml" group="VkurseApi" />
     </modules>
   </component>
 </project>

@@ -1,4 +1,4 @@
-package test.model;
+package com.thebrodyaga.vkurseapi.model;
 
 public class VkPostSourceInfo {
     public Integer ownerId;
