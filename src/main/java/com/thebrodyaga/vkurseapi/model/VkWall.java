@@ -116,7 +116,7 @@ public class VkWall {
     private VkWallResponse getPostsFromWall(@NotNull OwnerInfo ownerInfo, @Nullable Integer lastPostDate,
                                             @Nullable Integer timeStep, @NotNull Integer offset, @NotNull Boolean isFirstWall) throws ClientException, ApiException {
         VkWallResponse result = new VkWallResponse(
-                (Application.getVk().wall().get(Application.getActor())
+                (Application.getVk().wall().get(Application.getServiceActor())
                         .ownerId(ownerInfo.ownerId)
                         .count(postCount)
                         .offset(offset)
@@ -128,8 +128,8 @@ public class VkWall {
                     result.resultList.get(0).getDate() - timeStep :
                     result.resultList.get(1).getDate() - timeStep;
         if (result.resultList.get(result.resultList.size() - 1).getDate() > lastPostDate && result.resultList.size() == postCount) {
-            VkWallResponse recursiveResult = isFirstWall ?
-                    getFirstPosts(ownerInfo, timeStep, offset + result.resultList.size()) :
+            VkWallResponse recursiveResult = /*isFirstWall ?
+                    getFirstPosts(ownerInfo, timeStep, offset + result.resultList.size()) :*/
                     getAfterLastPosts(ownerInfo, lastPostDate, offset + result.resultList.size());
             result.resultList.addAll(recursiveResult.resultList);
             result.count = result.count + recursiveResult.count;
