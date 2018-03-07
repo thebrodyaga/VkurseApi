@@ -2,26 +2,35 @@ package com.thebrodyaga.vkurseapi;
 
 import com.vk.api.sdk.client.TransportClient;
 import com.vk.api.sdk.client.VkApiClient;
+import com.vk.api.sdk.client.actors.ServiceActor;
 import com.vk.api.sdk.client.actors.UserActor;
 import com.vk.api.sdk.httpclient.HttpTransportClient;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import static com.thebrodyaga.vkurseapi.Constants.*;
+
 @SpringBootApplication
 public class Application {
 
-    private static UserActor actor;
+    private static ServiceActor serviceActor;
+    private static UserActor userActor;
     private static VkApiClient vk;
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
         TransportClient transportClient = HttpTransportClient.getInstance();
         vk = new VkApiClient(transportClient);
-        actor = new UserActor(Constants.USER_ID, Constants.ACCESS_TOKEN);
+        userActor = new UserActor(USER_ID, ACCESS_TOKEN);
+        serviceActor = new ServiceActor(APP_ID, CLIENT_TOKEN);
     }
 
-    public static UserActor getActor() {
-        return actor;
+    public static ServiceActor getServiceActor() {
+        return serviceActor;
+    }
+
+    public static UserActor getUserActor() {
+        return userActor;
     }
 
     public static VkApiClient getVk() {
