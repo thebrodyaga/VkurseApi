@@ -76,7 +76,7 @@ public class VkWall {
           offset не изменяется, чтоб в следующем запросе учитывать новый пост
          */
         if (!isFirstWall)
-            this.wallPostList.removeIf(wallPostFull -> wallPostFull.getDate() > vkWallBody.lastPostDate);
+            this.wallPostList.removeIf(wallPostFull -> wallPostFull.getDate() >= vkWallBody.lastPostDate);
         this.wallPostList.sort((o1, o2) -> o2.getDate().compareTo(
                 o1.getDate()));
         System.out.println();
