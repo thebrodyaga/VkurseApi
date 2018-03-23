@@ -24,4 +24,9 @@ public class VkController {
     public VkWall wallAfterLast(@RequestBody GetVkWallBody afterLastBody) {
         return new VkWall().getWallAfterLast(afterLastBody);
     }
+
+    @PostMapping("/newWall")
+    public VkWall getNewWall(@RequestBody GetVkWallBody newWallBody) {
+        return new VkWall().getNewWall(newWallBody);
+    }
 }

@@ -22,12 +22,20 @@ public class VkWall {
     private List<WallPostFull> wallPostList = new ArrayList<>();
 
     public VkWall getFirstWall(GetVkWallBody firstWallBody) {
-        return getWall(firstWallBody, true);
+        return getWall(firstWallBody, FIRST_WALL_FLAG);
     }
 
     public VkWall getWallAfterLast(GetVkWallBody afterLastBody) {
-        return getWall(afterLastBody, false);
+        return getWall(afterLastBody, AFTER_LAST_WALL_FLAG);
     }
+
+    public VkWall getNewWall(GetVkWallBody refreshBody) {
+        return getWall(refreshBody, NEW_WALL_FLAG);
+    }
+
+    public static final int NEW_WALL_FLAG = 0;
+    public static final int FIRST_WALL_FLAG = 1;
+    public static final int AFTER_LAST_WALL_FLAG = 2;
 
     /**
      * vkWallBody.lastPostDate     обязательный параметр при isFirstWall == false
@@ -38,7 +46,7 @@ public class VkWall {
      * else
      * получаю готовые посты в промежутке, сортирую результат
      */
-    private VkWall getWall(GetVkWallBody vkWallBody, @NotNull Boolean isFirstWall) {
+    private VkWall getWall(GetVkWallBody vkWallBody, @NotNull int neededWall) {
         if (vkWallBody.timeStep == null)
             vkWallBody.timeStep = timeStep;
         ExecutorService service = Executors.newCachedThreadPool();
@@ -49,16 +57,38 @@ public class VkWall {
                 try {
                     if (source.offset == null)
                         source.offset = 0;
-                    VkWallResponse currentResponse = isFirstWall ?
-                            getFirstPosts(source, vkWallBody.timeStep, source.offset) :
-                            getAfterLastPosts(source, vkWallBody.lastPostDate - vkWallBody.timeStep, source.offset);
+                    VkWallResponse currentResponse;
+                    switch (neededWall) {
+                        case FIRST_WALL_FLAG:
+                            currentResponse = getFirstPosts(source, vkWallBody.timeStep, source.offset);
+                            break;
+                        case AFTER_LAST_WALL_FLAG:
+                            currentResponse = getAfterLastPosts(source, vkWallBody.lastPostDate - vkWallBody.timeStep, source.offset);
+                            break;
+                        case NEW_WALL_FLAG:
+                            currentResponse = getNewWall(source, vkWallBody.firstPostDate);
+                            break;
+                        default:
+                            throw new RuntimeException("Хуйня пришла");
+                    }
                     synchronized (VkWall.this) {
+                        Integer offset;
+                        switch (neededWall) {
+                            case FIRST_WALL_FLAG:
+                                offset = 0;
+                                break;
+                            case AFTER_LAST_WALL_FLAG:
+                                offset = currentResponse.resultList.size()
+                                        + (source.offset != null ? source.offset : 0);
+                                break;
+                            case NEW_WALL_FLAG:
+                                offset = source.offset;
+                                break;
+                            default:
+                                throw new RuntimeException("Хуйня пришла");
+                        }
                         wallPostList.addAll(currentResponse.resultList);
-                        ownerInfoList.add(new OwnerInfo(source.ownerId,
-                                isFirstWall ? 0 :
-                                        currentResponse.resultList.size()
-                                                + (source.offset != null ? source.offset : 0),
-                                currentResponse.count));
+                        ownerInfoList.add(new OwnerInfo(source.ownerId, offset, currentResponse.count));
                     }
                 } catch (ClientException | ApiException e) {
                     e.printStackTrace();
@@ -75,17 +105,21 @@ public class VkWall {
           При добавлении нового поста в промежутке между запросами, удаляются посты раньше времени клиента,
           offset не изменяется, чтоб в следующем запросе учитывать новый пост
          */
-        if (!isFirstWall)
+        if (neededWall == AFTER_LAST_WALL_FLAG)
             this.wallPostList.removeIf(wallPostFull -> wallPostFull.getDate() >= vkWallBody.lastPostDate);
+        if (neededWall == NEW_WALL_FLAG)
+            this.wallPostList.removeIf(wallPostFull -> wallPostFull.getDate() <= vkWallBody.firstPostDate);
         this.wallPostList.sort((o1, o2) -> o2.getDate().compareTo(
                 o1.getDate()));
         System.out.println();
-        if (!isFirstWall)
+        if (neededWall == AFTER_LAST_WALL_FLAG)
             return this;
-        Integer lastPostDate = wallPostList.get(0).getDate() - vkWallBody.timeStep;
-        wallPostList.removeIf(wallPostFull -> wallPostFull.getDate() < lastPostDate);
+        if (neededWall == FIRST_WALL_FLAG) {
+            Integer lastPostDate = wallPostList.get(0).getDate() - vkWallBody.timeStep;
+            wallPostList.removeIf(wallPostFull -> wallPostFull.getDate() < lastPostDate);
+        }
         for (OwnerInfo sourceResult : ownerInfoList)
-            sourceResult.offset = Math.toIntExact(wallPostList
+            sourceResult.offset = (neededWall == NEW_WALL_FLAG ? sourceResult.offset : 0) + Math.toIntExact(wallPostList
                     .stream()
                     .filter(wallPostFull
                             -> wallPostFull.getOwnerId().equals(sourceResult.ownerId))
@@ -101,6 +135,11 @@ public class VkWall {
     private VkWallResponse getFirstPosts(@NotNull OwnerInfo ownerInfo, @NotNull Integer timeStep,
                                          @NotNull Integer offset) throws ClientException, ApiException {
         return getPostsFromWall(ownerInfo, null, timeStep, offset, true);
+    }
+
+    private VkWallResponse getNewWall(@NotNull OwnerInfo ownerInfo,
+                                      @NotNull Integer lastPostDate) throws ClientException, ApiException {
+        return getPostsFromWall(ownerInfo, lastPostDate, null, 0, false);
     }
 
     /**

@@ -10,6 +10,10 @@ public class GetVkWallBody implements Serializable {
      */
     public Integer lastPostDate;
     /**
+     * Время первого поста на клиенте. not null только при обновлении стены
+     */
+    public Integer firstPostDate;
+    /**
      * Временной промежуток необходимых постов
      */
     public Integer timeStep;
