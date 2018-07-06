@@ -14,6 +14,7 @@ import static com.thebrodyaga.vkurseapi.Constants.*;
 public class Application {
 
     private static ServiceActor serviceActor;
+    private static ServiceActor serviceSecretActor;
     private static UserActor userActor;
     private static VkApiClient vk;
 
@@ -23,10 +24,15 @@ public class Application {
         vk = new VkApiClient(transportClient);
         userActor = new UserActor(USER_ID, ACCESS_TOKEN);
         serviceActor = new ServiceActor(APP_ID, CLIENT_TOKEN);
+        serviceSecretActor = new ServiceActor(APP_ID, SECRET_KEY, CLIENT_TOKEN);
     }
 
     public static ServiceActor getServiceActor() {
         return serviceActor;
+    }
+
+    public static ServiceActor getServiceSecretActor() {
+        return serviceSecretActor;
     }
 
     public static UserActor getUserActor() {

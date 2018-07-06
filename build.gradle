@@ -27,7 +27,7 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 dependencies {
-    compile 'com.vk.api:sdk:0.5.11'
+    compile 'com.vk.api:sdk:0.5.12'
     compile ('org.springframework.boot:spring-boot-starter')
     compile ('org.springframework.boot:spring-boot-starter-web')
     testCompile('org.springframework.boot:spring-boot-starter-test')

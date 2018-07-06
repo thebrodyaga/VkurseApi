@@ -6,8 +6,11 @@ import com.thebrodyaga.vkurseapi.model.VkWall;
 import com.vk.api.sdk.exceptions.ApiException;
 import com.vk.api.sdk.exceptions.ClientException;
 import com.vk.api.sdk.objects.groups.GroupFull;
+import com.vk.api.sdk.objects.groups.responses.GetMembersResponse;
 import com.vk.api.sdk.objects.groups.responses.SearchResponse;
+import com.vk.api.sdk.queries.groups.GroupField;
 import com.vk.api.sdk.queries.groups.GroupsGetByIdQuery;
+import com.vk.api.sdk.queries.groups.GroupsGetMembersQuery;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -54,5 +57,23 @@ public class VkController {
         if (groupIds != null)
             query.groupIds(groupIds);
         return query.execute();
+    }
+
+    @GetMapping("/getSingleGroup")
+    public List<GroupFull> getSingleGroup(@RequestParam() String groupId) throws ClientException, ApiException {
+        GroupsGetByIdQuery query = Application.getVk().groups().getById(Application.getServiceActor());
+        query.groupId(groupId)
+                .fields(GroupField.CITY, GroupField.CONTACTS, GroupField.COVER, GroupField.DESCRIPTION,
+                        GroupField.FIXED_POST, GroupField.LINKS, GroupField.MAIN_ALBUM_ID,GroupField.PLACE,
+                        GroupField.SITE,GroupField.STATUS,GroupField.VERIFIED,
+                        GroupField.COUNTERS, GroupField.LINKS);
+        return query.execute();
+    }
+
+    @GetMapping("/getGroupsMembers")
+    public GetMembersResponse getGroupsMembers(@RequestParam() String groupId) throws ClientException, ApiException {
+        return Application.getVk().groups()
+                .getMembers(Application.getServiceActor())
+                .groupId(groupId).execute();
     }
 }
