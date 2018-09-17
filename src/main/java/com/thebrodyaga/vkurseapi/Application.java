@@ -8,6 +8,9 @@ import com.vk.api.sdk.httpclient.HttpTransportClient;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
 import static com.thebrodyaga.vkurseapi.Constants.*;
 
 @SpringBootApplication
@@ -25,6 +28,17 @@ public class Application {
         userActor = new UserActor(USER_ID, ACCESS_TOKEN);
         serviceActor = new ServiceActor(APP_ID, CLIENT_TOKEN);
         serviceSecretActor = new ServiceActor(APP_ID, SECRET_KEY, CLIENT_TOKEN);
+        printIp();
+    }
+
+    private static void printIp() {
+        InetAddress ip;
+        try {
+            ip = InetAddress.getLocalHost();
+            System.out.println("Current IP address : " + ip.getHostAddress());
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
     }
 
     public static ServiceActor getServiceActor() {
