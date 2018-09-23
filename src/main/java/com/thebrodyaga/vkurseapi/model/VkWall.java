@@ -5,11 +5,15 @@ import com.sun.istack.internal.Nullable;
 import com.thebrodyaga.vkurseapi.Application;
 import com.vk.api.sdk.exceptions.ApiException;
 import com.vk.api.sdk.exceptions.ClientException;
+import com.vk.api.sdk.objects.groups.GroupFull;
+import com.vk.api.sdk.objects.users.UserFull;
 import com.vk.api.sdk.objects.wall.WallPostFull;
-import com.vk.api.sdk.objects.wall.responses.GetResponse;
+import com.vk.api.sdk.objects.wall.responses.GetExtendedResponse;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -20,6 +24,8 @@ import static com.thebrodyaga.vkurseapi.controller.VkController.timeStep;
 public class VkWall {
     private List<OwnerInfo> ownerInfoList = new ArrayList<>();
     private List<WallPostFull> wallPostList = new ArrayList<>();
+    private Set<UserFull> profiles = new HashSet<>();
+    private Set<GroupFull> groups = new HashSet<>();
 
     public VkWall getFirstWall(GetVkWallBody firstWallBody) {
         return getWall(firstWallBody, FIRST_WALL_FLAG);
@@ -88,6 +94,8 @@ public class VkWall {
                                 throw new RuntimeException("Хуйня пришла");
                         }
                         wallPostList.addAll(currentResponse.resultList);
+                        profiles.addAll(currentResponse.profiles);
+                        groups.addAll(currentResponse.groups);
                         ownerInfoList.add(new OwnerInfo(source.ownerId, offset, currentResponse.count));
                     }
                 } catch (ClientException | ApiException e) {
@@ -149,13 +157,13 @@ public class VkWall {
      * @param offset       отступ для vk api
      * @return 1)  Запрос первой стены: все посты по времени от первого незакрепленного date до (date - timeStep)
      * 2)  Посты до определенной даты: все посты между offset и lastPostDate
-     * @throws ClientException
-     * @throws ApiException
+     * @throws ClientException todo
+     * @throws ApiException todo
      */
     private VkWallResponse getPostsFromWall(@NotNull OwnerInfo ownerInfo, @Nullable Integer lastPostDate,
                                             @Nullable Integer timeStep, @NotNull Integer offset, @NotNull Boolean isFirstWall) throws ClientException, ApiException {
         VkWallResponse result = new VkWallResponse(
-                (Application.getVk().wall().get(Application.getServiceActor())
+                (Application.getVk().wall().getExtended(Application.getServiceActor())
                         .ownerId(ownerInfo.ownerId)
                         .count(postCount)
                         .offset(offset)
@@ -185,10 +193,16 @@ public class VkWall {
     private static class VkWallResponse {
         private List<WallPostFull> resultList = new ArrayList<>();
         private Integer count;
+        private Set<UserFull> profiles = new HashSet<>();
+        private Set<GroupFull> groups = new HashSet<>();
 
-        VkWallResponse(GetResponse response) {
+        VkWallResponse(GetExtendedResponse response) {
             this.resultList.addAll(response.getItems());
             this.count = response.getCount();
+            if (response.getProfiles() != null)
+                profiles.addAll(response.getProfiles());
+            if (response.getGroups() != null)
+                groups.addAll(response.getGroups());
         }
     }
 
@@ -199,4 +213,13 @@ public class VkWall {
     public List<WallPostFull> getWallPostList() {
         return wallPostList;
     }
+
+    public Set<UserFull> getProfiles() {
+        return profiles;
+    }
+
+    public Set<GroupFull> getGroups() {
+        return groups;
+    }
+
 }
