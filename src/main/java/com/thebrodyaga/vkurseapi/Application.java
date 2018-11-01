@@ -19,6 +19,7 @@ public class Application {
     private static ServiceActor serviceActor;
     private static ServiceActor serviceSecretActor;
     private static UserActor userActor;
+    private static UserActor photoUserActor;
     private static VkApiClient vk;
 
     public static void main(String[] args) {
@@ -26,9 +27,11 @@ public class Application {
         TransportClient transportClient = HttpTransportClient.getInstance();
         vk = new VkApiClient(transportClient);
         userActor = new UserActor(USER_ID, ACCESS_TOKEN);
+        photoUserActor = new UserActor(USER_ID, PHOTO_ACCESS_TOKEN);
         serviceActor = new ServiceActor(APP_ID, CLIENT_TOKEN);
         serviceSecretActor = new ServiceActor(APP_ID, SECRET_KEY, CLIENT_TOKEN);
         printIp();
+//        new PhotoHolder().startLoad();
     }
 
     private static void printIp() {
@@ -55,5 +58,9 @@ public class Application {
 
     public static VkApiClient getVk() {
         return vk;
+    }
+
+    public static UserActor getPhotoUserActor() {
+        return photoUserActor;
     }
 }
